@@ -5,13 +5,13 @@ public class PlayerController : MonoBehaviour {
 		public int x;
 		public int y;
 		public float zRotate;
-		public int spearY;
+		public float spearY;
 	}
 	//float attacked= 0;//this is to control the timing for the spear going out and then back to resting as well as a cooldown
 	bool attacking = false;
 	float movementSpeed = 8f;
 	float rotationSpeed = 4f;
-	public int score = 0;
+	public int score = 0;//kills
 	public GameObject spear;
 	CubeState state;
 	// Use this for initialization
@@ -40,7 +40,7 @@ public class PlayerController : MonoBehaviour {
 				continue;
 			state = Rotate (state, rotkey);
 		}
-		if (Input.GetMouseButton (0)) {
+		if (attacking == false && Input.GetMouseButtonDown (0)) {//this is why I drink, runs half a million times per mouse click
 			attacking = true;
 		}
 		SyncState();
@@ -48,16 +48,19 @@ public class PlayerController : MonoBehaviour {
 	void SyncState () {
 		if (!attacking) {
 			transform.position = Vector2.Lerp (transform.position, new Vector2 (state.x, state.y), Time.deltaTime * movementSpeed);
-			//spear.transform.position = Vector2.Lerp(spear.transform.position, new Vector2(spear.transform.position.x, state.spearY), Time.deltaTime * movementSpeed);
 			Quaternion target = Quaternion.Euler (0, 0, state.zRotate);
 			transform.rotation = Quaternion.Slerp (transform.rotation, target, Time.deltaTime * rotationSpeed);
 		} else {
-			state.spearY++;
-			spear.transform.position = Vector2.Lerp(spear.transform.position, new Vector2(spear.transform.position.x, state.spearY), Time.deltaTime * movementSpeed);
-			state.spearY --;
-			spear.transform.position = Vector2.Lerp(spear.transform.position, new Vector2(spear.transform.position.x, state.spearY), Time.deltaTime * movementSpeed);
-			attacking = false;
+			state.spearY = 0.8f;
+			spear.transform.position = Vector3.Lerp(spear.transform.position, new Vector3(spear.transform.position.x, state.spearY, spear.transform.position.z), Time.deltaTime * movementSpeed);
+			StartCoroutine (Wait (1f));
 		}
+	}
+	IEnumerator Wait (float seconds){
+		yield return new WaitForSeconds(seconds);
+		state.spearY = 0f;
+		spear.transform.position = Vector3.Lerp(spear.transform.position, new Vector3(spear.transform.position.x, state.spearY, spear.transform.position.z), Time.deltaTime * movementSpeed);
+		attacking = false;
 	}
 	CubeState Move(CubeState previous, KeyCode arrowKey) {
 		int dx = 0;
