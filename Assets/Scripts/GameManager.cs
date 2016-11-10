@@ -28,25 +28,27 @@ public class GameManager : MonoBehaviour
     // When playing. 
     public void StartGame()
     {
-        SetGameState(GameState.inGame);
+        //SetGameState(GameState.inGame);
     }
 
     // Call when player loses. 
     public void GameOver()
     {
-        SetGameState(GameState.gameOver);
+        // SetGameState(GameState.gameOver);
+        Debug.Log("Stop game");
     }
 
     // Call when player wins. 
     public void Win()
     {
-        SetGameState(GameState.win);
+        //SetGameState(GameState.win);
+        // Idk if we'll use this depends on UI. 
     }
 
     // Go back to menu. 
     public void BackToMenu()
     {
-        SetGameState(GameState.menu);
+        //SetGameState(GameState.menu);
     }
 
     // Sets game state... 

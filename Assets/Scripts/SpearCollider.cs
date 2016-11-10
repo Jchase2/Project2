@@ -3,22 +3,23 @@ using System.Collections;
 
 public class SpearCollider : MonoBehaviour
 {
+    public int beenHit = 0;
 
-    public static SpearCollider instance;
-
-    void Awake()
+    void Update()
     {
-        instance = this;
-    }
-
-    void OnTriggerEnter(Collider other)
-    {//may have to put on a script on player object, not player prefab. ya know, cuz this script controlls player and spear. Thats a pain...
-        Debug.Log("Wat");
-        if (other.gameObject.tag == "SpearPoint")
+        if (beenHit >= 3)
         {
-            //die
-            Debug.Log("Woe there");
+            Debug.Log("You've been hit 3 times, you're ded.");
+            //GameManager.instance.GameOver();
+            //Destroy(this.gameObject);
         }
-
+    }
+    void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.tag == "Player")
+        {
+            Debug.Log("You got stabbed!");
+            beenHit = beenHit + 1;
+        }
     }
 }
