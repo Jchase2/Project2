@@ -136,9 +136,5 @@ public class PlayerController : NetworkBehaviour {
 			zRotate = dRot
 		};
 	}
-	void OnTriggerEnter(Collider other){//may have to put on a script on player object, not player prefab. ya know, cuz this script controlls player and spear. Thats a pain...
-		if (other.gameObject.CompareTag ("SpearPoint")) {
-			//die
-		}
-	}
+
 }
