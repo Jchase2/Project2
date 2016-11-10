@@ -9,7 +9,7 @@ public class PlayerController : NetworkBehaviour {
 		public float spearY;
 	}
 	//float attacked= 0;//this is to control the timing for the spear going out and then back to resting as well as a cooldown
-	bool attacking = false;
+	[SyncVar] bool attacking = false;
 	float movementSpeed = 8f;
 	float rotationSpeed = 4f;
 	public int score = 0;//kills
@@ -39,16 +39,22 @@ public class PlayerController : NetworkBehaviour {
                 //state = Move(state, arrowKey);
                 CmdMoveOnServer(arrowKey);
             }
+
+            KeyCode[] rotKeys = { KeyCode.W, KeyCode.A, KeyCode.S, KeyCode.D };
+            foreach (KeyCode rotkey in rotKeys)
+            {
+                if (!Input.GetKeyDown(rotkey))
+                    continue;
+                //state = Rotate(state, rotkey);
+                CmdRotateOnServer(rotkey);
+            }
+
+            if (attacking == false && Input.GetMouseButtonDown(0))
+            {//this is why I drink, runs half a million times per mouse click
+                //attacking = true;
+                CmdAttackOnServer();
+            }
         }
-		KeyCode[] rotKeys = { KeyCode.W, KeyCode.A, KeyCode.S, KeyCode.D };
-		foreach (KeyCode rotkey in rotKeys) {
-			if (!Input.GetKeyDown (rotkey))
-				continue;
-			state = Rotate (state, rotkey);
-		}
-		if (attacking == false && Input.GetMouseButtonDown (0)) {//this is why I drink, runs half a million times per mouse click
-			attacking = true;
-		}
 		SyncState();
 	}
 
@@ -56,6 +62,16 @@ public class PlayerController : NetworkBehaviour {
     void CmdMoveOnServer(KeyCode arrowKey)
     {
         state = Move(state, arrowKey);
+    }
+    [Command]
+    void CmdAttackOnServer()
+    {
+        attacking = true;
+    }
+    [Command]
+    void CmdRotateOnServer(KeyCode rotkey)
+    {
+        state = Rotate(state, rotkey);
     }
 
     void SyncState () {
